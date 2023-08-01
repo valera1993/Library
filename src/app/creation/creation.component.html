@@ -1,0 +1,139 @@
+<div class="container">
+  <div class="content-container">
+    <table class="main-table" *ngIf="!flag">
+      <thead class="table-titles">
+        <tr>
+          <th>Автор</th>
+          <th class="artworks th" (click)="sortByName('artworksName')">
+            Произведение
+          </th>
+          <th class="genre th" (click)="sortByGenre('genre')">Жанр</th>
+          <th>Cтр.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let creation of dataBook">
+          <td class="info info-author">{{ creation.author }}</td>
+          <td class="info info-author">{{ creation.artworksName }}</td>
+          <td class="info">{{ creation.genre }}</td>
+          <td class="info">{{ creation.pages }}</td>
+          <td class="details redact" (click)="redactCreation(creation)">
+            {{ creation.redact }}
+          </td>
+          <td class="details delete" (click)="deleteCreation(creation)">
+            {{ creation.delete }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div .form-container *ngIf="flag">
+      <p>У этого автора пока нет произведений. Хотите добавить?</p>
+    </div>
+    <div class="addCreation-block">
+      <button class="addCreation-btn" (click)="openCreationForm()">
+        Добавить произведение
+      </button>
+    </div>
+    <div class="form-container creation-form-container" *ngIf="addCreationFlag">
+      <form
+        class="main-form creation-form"
+        #addCreationForm="ngForm"
+        (ngSubmit)="addCreation(artworksName.value, genre.value, pages.value)"
+      >
+        <button class="close-btn" (click)="closeForm()">&#10008;</button>
+        <label for="artworksName">Введите название произведения</label>
+        <input
+          class="form-inp"
+          placeholder="Название"
+          #artworksName
+          type="text"
+          name="artworksName"
+          required
+          ngModel
+          pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+        />
+        <label for="genre">Введите жанр</label>
+        <input
+          class="form-inp"
+          placeholder="Жанр"
+          #genre
+          type="text"
+          name="genre"
+          required
+          ngModel
+          pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+        />
+        <label for="pages">Введите количество страниц</label>
+        <input
+          class="form-inp"
+          #pages
+          type="number"
+          placeholder="0"
+          name="pages"
+          required
+          ngModel
+          pattern="^[1-9]\d*$"
+        />
+        <button
+          class="submit"
+          type="submit"
+          [disabled]="addCreationForm.invalid"
+        >
+          Добавить
+        </button>
+      </form>
+    </div>
+
+    <div class="form-container creation-form-container" *ngIf="redactFormFlag">
+      <form
+        class="main-form creation-form"
+        #redacCreationtForm="ngForm"
+        (ngSubmit)="onFormSubmit(elem)"
+        *ngFor="let elem of redactForm"
+      >
+        <button class="close-btn" (click)="closeForm()">&#10008;</button>
+        <label for="artworksName">Произведение</label>
+        <input
+          class="form-inp"
+          #artworksName
+          type="text"
+          name="artworksName"
+          [(ngModel)]="elem.artworksName"
+          required
+          pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+        />
+        <label for="pages">Количество страниц</label>
+        <input
+          class="form-inp"
+          #pages
+          name="pages"
+          type="text"
+          [(ngModel)]="elem.pages"
+          required
+          pattern="^[1-9]\d*$"
+        />
+        <label for="genre">Жанр</label>
+        <input
+          class="form-inp"
+          #genre
+          type="text"
+          name="genre"
+          [(ngModel)]="elem.genre"
+          (blur)="checkGenreValidity(genre.value)"
+          required
+          pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+        />
+        <button
+          class="submit"
+          type="submit"
+          [disabled]="
+            redacCreationtForm.invalid || !genres.includes(elem.genre)
+          "
+        >
+          Изменить
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

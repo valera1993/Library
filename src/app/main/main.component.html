@@ -1,0 +1,159 @@
+<div class="container main-container">
+  <div class="content-container">
+    <table class="main-table">
+      <thead class="table-titles">
+        <tr>
+          <th class="author th" (click)="sortByName('surname')">Авторы</th>
+          <th class="booklist th" (click)="sortByBooks('booklist')">Изданий</th>
+          <th class="birthday th">Дата рождения</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="main-table-row" *ngFor="let author of authorsDuplicate">
+          <td class="info info-author">
+            {{ author.author.surname }}
+            {{ author.author.name | slice : 0 : 1 }}.{{
+              author.author.fathername | slice : 0 : 1
+            }}.
+          </td>
+          <td class="info">{{ author.author.booklist }}</td>
+          <td class="info birthday-info">
+            {{ author.author.birthday | date : "dd.MM.yyyy" }} г.
+          </td>
+          <td
+            class="details description"
+            (click)="getAuthorSurname(author)"
+            routerLink="creation"
+          >
+            {{ author.description }}
+          </td>
+          <td class="details redact" (click)="redactAuthor(author)">
+            {{ author.redact }}
+          </td>
+          <td class="details delete" (click)="deleteAuthor(author)">
+            {{ author.delete }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="addAuthor-block">
+      <button class="addAuthor-btn" (click)="addAuthor()">
+        Добавить автора
+      </button>
+    </div>
+    <div class="form-container" *ngIf="newAuthorFlag">
+      <form
+        class="main-form"
+        #addAuthorForm="ngForm"
+        (ngSubmit)="
+          createNewAuthor(surname.value, name.value, fathername.value)
+        "
+      >
+        <button class="close-btn" (click)="closeForm()">&#10008;</button>
+        <label for="surname">Введите фамилию</label>
+        <input
+          class="form-inp"
+          #surname
+          type="text"
+          placeholder="Иванов"
+          name="surname"
+          ngModel
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+        <label for="name">Введите имя</label>
+        <input
+          class="form-inp"
+          #name
+          type="text"
+          placeholder="Иван"
+          name="name"
+          ngModel
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+        <label for="fathername">Введите отчество</label>
+        <input
+          class="form-inp"
+          #fathername
+          type="text"
+          placeholder="Иванович"
+          name="fathername"
+          ngModel
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+        <label for="birthday">Укажите дату рождения</label>
+        <input
+          class="form-inp"
+          #birthday
+          type="date"
+          name="birthday"
+          (change)="getNewbirthday(birthday.value)"
+          ngModel
+          required
+          [max]="getCurrentDate()"
+        />
+        <button class="submit" type="submit" [disabled]="addAuthorForm.invalid">
+          Добавить
+        </button>
+      </form>
+    </div>
+
+    <div class="form-container" *ngIf="flag">
+      <form
+        class="main-form"
+        *ngFor="let elem of form"
+        #editForm="ngForm"
+        (ngSubmit)="onFormSubmit(elem)"
+      >
+        <button class="close-btn" (click)="closeForm()">&#10008;</button>
+        <label for="surname">Фамилия</label>
+        <input
+          class="form-inp"
+          #surname
+          type="text"
+          name="surname"
+          [(ngModel)]="elem.surname"
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+        <label for="name">Имя</label>
+        <input
+          class="form-inp"
+          type="text"
+          name="name"
+          [(ngModel)]="elem.name"
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+
+        <label for="fathername">Отчество</label>
+        <input
+          class="form-inp"
+          #fathername
+          name="fathername"
+          type="text"
+          [(ngModel)]="elem.fathername"
+          pattern="^[А-ЯЁ][а-яё]+$"
+          required
+        />
+
+        <label for="birthday">Дата рождения</label>
+        <input
+          class="form-inp"
+          #birthday
+          type="date"
+          name="birthday"
+          (change)="getNewbirthday(birthday.value)"
+          ngModel
+          required
+          [max]="getCurrentDate()"
+        />
+        <button class="submit" type="submit" [disabled]="editForm.invalid">
+          Изменить
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

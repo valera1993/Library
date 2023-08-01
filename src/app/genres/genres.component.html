@@ -1,0 +1,101 @@
+<div class="container">
+  <div class="genre-menu">
+    <input
+      class="search-inp"
+      type="text"
+      #search
+      placeholder="Поиск"
+      (input)="lookingArtwork(search.value)"
+    />
+
+    <form>
+      <input
+        class="add-genre-inp"
+        type="text"
+        #addGenre
+        name="addGenre"
+        [(ngModel)]="genreInput"
+        placeholder="Добавить жанр"
+      />
+      <button class="add-genre-btn" (click)="addNewGenre(genreInput)">
+        Добавить жанр
+      </button>
+    </form>
+  </div>
+
+  <table class="main-table">
+    <thead class="table-titles">
+      <tr>
+        <th class="author th" (click)="sortByAuthor('author')">Автор</th>
+        <th class="artworksName th" (click)="sortByName('artworksName')">
+          Произведение
+        </th>
+        <th class="genre th" (click)="sortByName('genre')">Жанр</th>
+        <th>Стр.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let book of booksArrayDuplicate">
+        <td class="info info-author">{{ book.author }}</td>
+        <td class="info info-author">{{ book.artworksName }}</td>
+        <td class="info">{{ book.genre }}</td>
+        <td class="info">{{ book.pages }}</td>
+        <td class="details redact" (click)="redactCreation(book)">
+          {{ book.redact }}
+        </td>
+        <td class="details delete" (click)="deleteBook(book)">
+          {{ book.delete }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="form-container genre-form-container" *ngIf="redactFormFlag">
+    <form
+      class="main-form genre-form"
+      *ngFor="let elem of redactForm"
+      #redactGenreForm="ngForm"
+      (ngSubmit)="onFormSubmit(elem)"
+    >
+      <button class="close-btn" (click)="closeForm()">&#10008;</button>
+      <label for="artworksName">Произведение</label>
+      <input
+        class="form-inp"
+        #artworksName
+        type="text"
+        name="artworksName"
+        [(ngModel)]="elem.artworksName"
+        required
+        pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+      />
+      <label for="genre">Жанр</label>
+      <input
+        class="form-inp"
+        #genre
+        type="text"
+        name="genre"
+        [(ngModel)]="elem.genre"
+        (blur)="checkGenreValidity(genre.value)"
+        required
+        pattern="^[А-ЯЁа-яёЇЄҐІі\s-]+$"
+      />
+      <label for="pages">Количество страниц</label>
+      <input
+        class="form-inp"
+        #pages
+        name="pages"
+        type="text"
+        [(ngModel)]="elem.pages"
+        required
+        pattern="^[1-9]\d*$"
+      />
+      <button
+        class="submit"
+        type="submit"
+        [disabled]="redactGenreForm.invalid || !genres.includes(elem.genre)"
+      >
+        Изменить
+      </button>
+    </form>
+  </div>
+</div>
